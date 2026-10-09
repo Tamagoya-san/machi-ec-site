@@ -1,19 +1,5 @@
 export type CategoryId = 'taiwan-taste' | 'taiwan-craft' | 'machi-original' | 'bridge'
 
-export type Motif =
-  | 'tea'
-  | 'cake'
-  | 'candy'
-  | 'pouch'
-  | 'bag'
-  | 'tile'
-  | 'book'
-  | 'postcard'
-  | 'sticker'
-  | 'stand'
-  | 'towel'
-  | 'notebook'
-
 export interface Category {
   id: CategoryId
   name: string
@@ -38,7 +24,8 @@ export interface Product {
   story: string
   details: string[]
   variants?: Variant[]
-  art: { motif: Motif; palette: [string, string] }
+  /** 写真が用意されるまでの表示。商品を表す一字（繁体字）と台湾華語の読み、背景色。 */
+  plate: { glyph: string; roman: string; tone: string }
 }
 
 export const categories: Category[] = [
@@ -81,7 +68,7 @@ export const products: Product[] = [
     story:
       '小さい頃、祖母が朝いちばんに淹れてくれたのがこのお茶でした。東京の朝にも、あの山の空気を少しだけ。',
     details: ['内容量：75g（約25杯分）', '原産地：台湾・嘉義県 阿里山', '賞味期限：製造より24ヶ月'],
-    art: { motif: 'tea', palette: ['#d7ead9', '#f5efe2'] },
+    plate: { glyph: '茶', roman: 'chá', tone: '#dfe4da' },
   },
   {
     id: 'pineapple-cake',
@@ -95,7 +82,7 @@ export const products: Product[] = [
     story:
       '台湾に帰るたびに必ず買う、台中の小さなお店のもの。日本の友だちに配ると、いつも「どこで買えるの？」と聞かれます。',
     details: ['内容量：6個入', '原材料：小麦粉、バター、パイナップル、砂糖、卵', 'アレルゲン：小麦・乳・卵'],
-    art: { motif: 'cake', palette: ['#fbe7c6', '#fdf6ea'] },
+    plate: { glyph: '酥', roman: 'sū', tone: '#ece4d3' },
   },
   {
     id: 'nougat',
@@ -107,7 +94,7 @@ export const products: Product[] = [
     summary: 'ピーナッツ入りのやわらかミルクヌガー。お茶のおともに。',
     story: '旧正月に家族みんなでつまんだ思い出の味。ひとつ食べると、もうひとつ欲しくなります。',
     details: ['内容量：200g（個包装）', '原産地：台湾・台北市', 'アレルゲン：乳・落花生'],
-    art: { motif: 'candy', palette: ['#f6dfe3', '#fdf3f1'] },
+    plate: { glyph: '糖', roman: 'táng', tone: '#efe7e3' },
   },
   {
     id: 'hakka-pouch',
@@ -124,7 +111,7 @@ export const products: Product[] = [
       { id: 'blue', label: '藍（あお）' },
       { id: 'pink', label: '桃（もも）' },
     ],
-    art: { motif: 'pouch', palette: ['#f3d3d6', '#fbeff0'] },
+    plate: { glyph: '布', roman: 'bù', tone: '#ecdcd7' },
   },
   {
     id: 'mini-tote',
@@ -136,8 +123,8 @@ export const products: Product[] = [
     badge: 'Machi Select',
     summary: '台湾の市場でおなじみのストライプバッグを、街使いサイズに。',
     story: 'おばあちゃんたちが市場で使っている、あの袋。東京で持つと、意外とおしゃれって言われます。',
-    details: ['サイズ：W26 × H22 × D10cm', '素材：ポリプロピレン', '軽量・撥水'],
-    art: { motif: 'bag', palette: ['#d6e6f2', '#f1f6fa'] },
+    details: ['サイズ：W26 × H22 × D10cm', '素材：ポリプロピレン', '特長：軽量・撥水'],
+    plate: { glyph: '袋', roman: 'dài', tone: '#e4e1d6' },
   },
   {
     id: 'tile-coaster',
@@ -148,8 +135,8 @@ export const products: Product[] = [
     stock: 28,
     summary: '古い洋館を彩った花磚（ファージュアン）柄の陶器コースター。',
     story: '台南の古民家カフェで見たタイルが忘れられなくて。食卓がぱっと明るくなります。',
-    details: ['サイズ：10 × 10cm', '素材：陶器（裏面コルク）', '2枚1組'],
-    art: { motif: 'tile', palette: ['#d9e7f0', '#f6f2ea'] },
+    details: ['サイズ：10 × 10cm', '素材：陶器（裏面コルク）', '内容：2枚1組'],
+    plate: { glyph: '磚', roman: 'zhuān', tone: '#d9e2e8' },
   },
   {
     id: 'photobook',
@@ -162,8 +149,8 @@ export const products: Product[] = [
     summary: '東京と台湾、ふたつの街で撮りためた写真とエッセイ。直筆サイン入り。',
     story:
       '来日してからの9年間を、写真と短い言葉で綴りました。迷った日も、うれしかった日も、ぜんぶ雲のむこうにつながっていた気がします。',
-    details: ['B5変形・96ページ', '日本語／繁體中文 併記', '直筆サイン入り（数量限定）'],
-    art: { motif: 'book', palette: ['#dbe9f6', '#fbfcfe'] },
+    details: ['判型：B5変形・96ページ', '言語：日本語／繁體中文 併記', '特典：直筆サイン入り（数量限定）'],
+    plate: { glyph: '雲', roman: 'yún', tone: '#e3e9ed' },
   },
   {
     id: 'postcards',
@@ -174,8 +161,8 @@ export const products: Product[] = [
     stock: 50,
     summary: '九份、台南、浅草、銭湯…Machiが歩いた風景をポストカードに。',
     story: '旅先で「この景色、誰かに送りたい」と思った瞬間を集めました。大切な人へのひとことに。',
-    details: ['サイズ：148 × 100mm', '8種各1枚', 'マットコート紙'],
-    art: { motif: 'postcard', palette: ['#f3e3d3', '#fbf6f0'] },
+    details: ['サイズ：148 × 100mm', '内容：8種各1枚', '用紙：マットコート紙'],
+    plate: { glyph: '信', roman: 'xìn', tone: '#ebe5db' },
   },
   {
     id: 'stickers',
@@ -187,8 +174,8 @@ export const products: Product[] = [
     badge: 'NEW',
     summary: 'シャボン玉や雲、台湾グルメをモチーフにした耐水ステッカー。',
     story: 'スマホやスーツケースに貼って、一緒に旅に出てくれたらうれしいです。',
-    details: ['6枚入', '耐水・耐光加工', '最大サイズ 約60mm'],
-    art: { motif: 'sticker', palette: ['#e4e0f3', '#f7f5fc'] },
+    details: ['内容：6枚入', '加工：耐水・耐光', 'サイズ：最大 約60mm'],
+    plate: { glyph: '說', roman: 'shuō', tone: '#e6e5ea' },
   },
   {
     id: 'acrylic-stand',
@@ -199,8 +186,8 @@ export const products: Product[] = [
     stock: 30,
     summary: '夏祭りの撮影で生まれた、浴衣姿のMachiのアクリルスタンド。',
     story: 'はじめての撮り下ろしグッズです。デスクの片すみで、いつも応援しています。',
-    details: ['サイズ：H約150mm', '素材：アクリル', '台座付き'],
-    art: { motif: 'stand', palette: ['#f6dbe2', '#eef4fb'] },
+    details: ['サイズ：H約150mm', '素材：アクリル', '付属：台座'],
+    plate: { glyph: '夏', roman: 'xià', tone: '#ece3e2' },
   },
   {
     id: 'sento-towel',
@@ -213,8 +200,8 @@ export const products: Product[] = [
     summary: '東京の銭湯と台湾の温泉をつなぐ、今治製のフェイスタオル。',
     story:
       '東京の銭湯に通うようになって、台湾の北投温泉を思い出しました。湯けむりの向こうは、どちらも同じあたたかさ。',
-    details: ['サイズ：34 × 85cm', '素材：綿100%（今治産）', '日本製'],
-    art: { motif: 'towel', palette: ['#d3e7ee', '#f3f8fa'] },
+    details: ['サイズ：34 × 85cm', '素材：綿100%（今治産）', '生産：日本製'],
+    plate: { glyph: '湯', roman: 'tāng', tone: '#e1e7e3' },
   },
   {
     id: 'temple-notebook',
@@ -227,8 +214,8 @@ export const products: Product[] = [
     summary: '日本の御朱印帳スタイルで、台湾の廟めぐりを記録できる蛇腹ノート。',
     story:
       '日本で御朱印を知って、台湾の廟にも記念スタンプ文化があることに気づきました。ふたつの文化を、一冊に。',
-    details: ['サイズ：16 × 11cm', '蛇腹式・48面', '表紙：台湾花布'],
-    art: { motif: 'notebook', palette: ['#f2d6cf', '#fbf3ef'] },
+    details: ['サイズ：16 × 11cm', '仕様：蛇腹式・48面', '表紙：台湾花布'],
+    plate: { glyph: '廟', roman: 'miào', tone: '#ebe0d8' },
   },
 ]
 
@@ -260,4 +247,10 @@ export const journal = [
 ]
 
 export const findProduct = (id: string) => products.find((p) => p.id === id)
+export const productNo = (product: Product) => `No.${String(products.indexOf(product) + 1).padStart(2, '0')}`
+export const badgeLabel: Record<NonNullable<Product['badge']>, string> = {
+  NEW: '新入荷',
+  限定: '数量限定',
+  'Machi Select': 'Machiのおすすめ',
+}
 export const findCategory = (id: string) => categories.find((c) => c.id === id)

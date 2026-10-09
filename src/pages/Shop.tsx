@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { PageHero } from '../components/Decor'
+import { PageHead } from '../components/Heads'
 import { ProductCard } from '../components/ProductCard'
 import { categories, products, type CategoryId } from '../data/products'
 import { clean } from '../lib/validation'
 
 const sorts = [
   { id: 'recommend', label: 'おすすめ順' },
-  { id: 'price-asc', label: '価格が安い順' },
-  { id: 'price-desc', label: '価格が高い順' },
+  { id: 'price-asc', label: '価格の安い順' },
+  { id: 'price-desc', label: '価格の高い順' },
 ] as const
 type SortId = (typeof sorts)[number]['id']
 
@@ -44,41 +44,44 @@ export function Shop() {
   }, [category, sort, query])
 
   const current = categories.find((c) => c.id === category)
+  const tabs = [{ id: null, name: 'すべて' }, ...categories]
 
   return (
     <>
-      <PageHero en="Shop" ja={current ? current.name : 'すべての商品'} lead={current?.lead ?? '台湾の味、手しごとの雑貨、そしてMachiのオリジナルアイテム。'} />
-      <section className="section section--tight">
-        <div className="filters">
-          <div className="chips" role="tablist" aria-label="カテゴリー">
-            <button type="button" role="tab" aria-selected={!category} className={`chip ${!category ? 'is-active' : ''}`} onClick={() => update('category', null)}>
-              すべて
-            </button>
-            {categories.map((c) => (
+      <PageHead
+        label="商品"
+        title={current ? current.name : 'すべての商品'}
+        lead={current?.lead ?? '台湾の味、手しごとの雑貨、そしてMachiのオリジナル。'}
+        aside={<span className="num">{list.length} items</span>}
+      />
+      <div className="wrap">
+        <div className="toolbar">
+          <div className="tabs" role="tablist" aria-label="カテゴリー">
+            {tabs.map((t) => (
               <button
-                key={c.id}
+                key={t.id ?? 'all'}
                 type="button"
                 role="tab"
-                aria-selected={category === c.id}
-                className={`chip ${category === c.id ? 'is-active' : ''}`}
-                onClick={() => update('category', c.id)}
+                aria-selected={category === t.id}
+                className={`tab ${category === t.id ? 'is-active' : ''}`}
+                onClick={() => update('category', t.id)}
               >
-                {c.name}
+                {t.name}
               </button>
             ))}
           </div>
-          <div className="filters__row">
+          <div className="toolbar__tools">
             <label className="search">
               <span className="visually-hidden">商品を検索</span>
               <input
                 type="search"
-                placeholder="商品を検索（例：烏龍茶）"
+                placeholder="検索"
                 maxLength={MAX_QUERY}
                 defaultValue={query}
                 onChange={(e) => update('q', clean(e.target.value).slice(0, MAX_QUERY) || null)}
               />
             </label>
-            <label className="select">
+            <label className="sort">
               <span className="visually-hidden">並び替え</span>
               <select value={sort} onChange={(e) => update('sort', e.target.value === 'recommend' ? null : e.target.value)}>
                 {sorts.map((s) => (
@@ -91,9 +94,8 @@ export function Shop() {
           </div>
         </div>
 
-        <p className="result-count">{list.length}件の商品</p>
         {list.length > 0 ? (
-          <div className="product-grid">
+          <div className="grid grid--shop">
             {list.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -101,7 +103,7 @@ export function Shop() {
         ) : (
           <p className="empty">条件に合う商品が見つかりませんでした。</p>
         )}
-      </section>
+      </div>
     </>
   )
 }

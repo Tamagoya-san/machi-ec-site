@@ -1,3 +1,1 @@
-const yen = new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' })
-
-export const formatYen = (value: number) => yen.format(value)
+export const formatYen = (value: number) => `¥${value.toLocaleString('ja-JP')}`

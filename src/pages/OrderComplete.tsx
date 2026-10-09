@@ -1,6 +1,5 @@
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { z } from 'zod'
-import { Bubbles } from '../components/Decor'
 import { formatYen } from '../lib/format'
 
 const stateSchema = z.object({
@@ -14,29 +13,32 @@ export function OrderComplete() {
   const { orderId, total } = parsed.data
 
   return (
-    <section className="complete">
-      <Bubbles count={10} />
-      <p className="complete__en">Thank you!</p>
-      <h1 className="complete__title">ご注文ありがとうございました</h1>
+    <section className="complete wrap">
+      <p className="label">ご注文完了</p>
+      <h1 className="complete__title">
+        ご注文ありがとう
+        <br />
+        ございました。
+      </h1>
       <p className="complete__zh" lang="zh-Hant">
-        謝謝你的訂購，願這個小故事帶給你溫暖。
+        謝謝你的訂購。
       </p>
-      <dl className="complete__info">
+      <dl className="spec complete__spec">
         <div>
           <dt>ご注文番号</dt>
-          <dd>{orderId}</dd>
+          <dd className="num">{orderId}</dd>
         </div>
         <div>
           <dt>お支払い金額</dt>
-          <dd>{formatYen(total)}</dd>
+          <dd className="num">{formatYen(total)}</dd>
+        </div>
+        <div>
+          <dt>発送予定</dt>
+          <dd>2〜5営業日以内</dd>
         </div>
       </dl>
-      <p className="complete__text">
-        （モック）本番環境では、ご登録のメールアドレスに注文確認メールが届きます。
-        <br />
-        商品は2〜5営業日以内に発送いたします。
-      </p>
-      <Link to="/" className="button button--primary">
+      <p className="complete__text">本番環境では、ご登録のメールアドレスに注文確認メールが届きます（モックのため送信されません）。</p>
+      <Link to="/" className="arrow-link">
         トップへ戻る
       </Link>
     </section>

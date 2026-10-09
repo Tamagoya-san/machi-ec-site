@@ -1,18 +1,18 @@
 import type { ReactNode } from 'react'
-import { PageHero } from '../components/Decor'
+import { PageHead } from '../components/Heads'
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '../lib/cart'
 import { formatYen } from '../lib/format'
 
-function Doc({ en, ja, children }: { en: string; ja: string; children: ReactNode }) {
+function Doc({ label, title, children }: { label: string; title: string; children: ReactNode }) {
   return (
     <>
-      <PageHero en={en} ja={ja} />
-      <section className="section section--tight">
+      <PageHead label={label} title={title} />
+      <div className="wrap">
         <div className="doc">
           {children}
           <p className="doc__mock">※ 本ページの記載内容はモック用のダミーです。公開前に正式な内容へ差し替えてください。</p>
         </div>
-      </section>
+      </div>
     </>
   )
 }
@@ -32,7 +32,7 @@ export function Legal() {
     ['返品・交換', '商品到着後7日以内、未使用・未開封に限り承ります（食品を除く）'],
   ]
   return (
-    <Doc en="Legal" ja="特定商取引法に基づく表記">
+    <Doc label="ご案内" title="特定商取引法に基づく表記">
       <dl className="doc__table">
         {rows.map(([k, v]) => (
           <div key={k}>
@@ -47,7 +47,7 @@ export function Legal() {
 
 export function Privacy() {
   return (
-    <Doc en="Privacy" ja="プライバシーポリシー">
+    <Doc label="ご案内" title="プライバシーポリシー">
       <h2>1. 取得する情報</h2>
       <p>氏名、住所、電話番号、メールアドレス、注文履歴など、商品のお届けに必要な情報を取得します。</p>
       <h2>2. 利用目的</h2>
@@ -66,7 +66,7 @@ export function Privacy() {
 
 export function Terms() {
   return (
-    <Doc en="Terms" ja="利用規約">
+    <Doc label="ご案内" title="利用規約">
       <h2>第1条（適用）</h2>
       <p>本規約は、Machi Story Shop（以下「当ショップ」）の利用に関する条件を定めるものです。</p>
       <h2>第2条（注文の成立）</h2>
@@ -81,7 +81,7 @@ export function Terms() {
 
 export function Guide() {
   return (
-    <Doc en="Guide" ja="ご利用ガイド">
+    <Doc label="ご案内" title="ご利用ガイド">
       <h2>送料について</h2>
       <p>
         全国一律 {formatYen(SHIPPING_FEE)}。{formatYen(FREE_SHIPPING_THRESHOLD)}（税込）以上のご注文で送料無料です。

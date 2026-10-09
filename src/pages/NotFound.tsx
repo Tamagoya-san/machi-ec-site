@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
-import { PageHero } from '../components/Decor'
+import { PageHead } from '../components/Heads'
 
 export function NotFound() {
   return (
     <>
-      <PageHero en="404" ja="ページが見つかりません" lead="お探しのページは雲のむこうへ行ってしまったようです。" />
-      <div className="section section--center">
-        <Link to="/" className="button button--primary">
+      <PageHead label="404" title="ページが見つかりません" lead="URLが変わったか、ページが削除された可能性があります。" />
+      <div className="wrap section--flush">
+        <Link to="/" className="arrow-link">
           トップへ戻る
         </Link>
       </div>

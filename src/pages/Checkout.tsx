@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { PageHero } from '../components/Decor'
+import { PageHead } from '../components/Heads'
 import { Field, Honeypot } from '../components/Field'
 import { useCart } from '../lib/cart'
 import { formatYen } from '../lib/format'
@@ -66,12 +66,12 @@ export function Checkout() {
 
   return (
     <>
-      <PageHero en="Checkout" ja="ご購入手続き" />
-      <section className="section section--tight">
+      <PageHead label="ご購入手続き" title="お届け先とお支払い" />
+      <div className="wrap">
         <form className="checkout" onSubmit={onSubmit} noValidate>
           <div className="checkout__main">
             <fieldset className="form-section">
-              <legend>お届け先</legend>
+              <legend><span className="num">01</span>お届け先</legend>
               <div className="form-grid">
                 <Field id="checkout-name" label="お名前" error={err('name')} required>
                   <input id="checkout-name" name="name" autoComplete="name" maxLength={40} aria-invalid={!!err('name')} aria-describedby={describedBy('name')} />
@@ -109,7 +109,7 @@ export function Checkout() {
             </fieldset>
 
             <fieldset className="form-section">
-              <legend>お支払い方法</legend>
+              <legend><span className="num">02</span>お支払い方法</legend>
               <div className="payment-list" id="checkout-payment" tabIndex={-1}>
                 {paymentMethods.map((m, i) => (
                   <label key={m.id} className="payment">
@@ -121,12 +121,12 @@ export function Checkout() {
               </div>
               {err('payment') && <p className="field__error">{err('payment')}</p>}
               <p className="secure-note">
-                🔒 カード情報は当サイトでは入力・保存しません。決済は PCI DSS 準拠の決済代行会社の画面で安全に行われます（本番想定）。
+                カード情報は当サイトでは入力・保存しません。決済は PCI DSS 準拠の決済代行会社の画面で安全に行われます（本番想定）。
               </p>
             </fieldset>
 
             <fieldset className="form-section">
-              <legend>備考</legend>
+              <legend><span className="num">03</span>備考</legend>
               <Field id="checkout-note" label="ギフト包装・メッセージなど" error={err('note')} hint="300文字以内">
                 <textarea id="checkout-note" name="note" rows={3} maxLength={300} />
               </Field>
@@ -164,13 +164,13 @@ export function Checkout() {
               ))}
             </ul>
             <OrderSummary />
-            <button type="submit" className="button button--primary button--block" disabled={submitting}>
+            <button type="submit" className="btn btn--block" disabled={submitting}>
               {submitting ? '処理中…' : '注文を確定する（モック）'}
             </button>
             <p className="checkout__mock">※ モックサイトのため、実際の注文・決済・メール送信は行われません。</p>
           </aside>
         </form>
-      </section>
+      </div>
     </>
   )
 }

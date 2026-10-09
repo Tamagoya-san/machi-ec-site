@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { PageHero } from '../components/Decor'
+import { PageHead } from '../components/Heads'
 import { Field, Honeypot } from '../components/Field'
 import { contactSchema, createThrottle, toFieldErrors, type FieldErrors } from '../lib/validation'
 
@@ -38,8 +38,8 @@ export function Contact() {
 
   return (
     <>
-      <PageHero en="Contact" ja="お問い合わせ" lead="ご注文やお仕事のご相談など、お気軽にどうぞ。" />
-      <section className="section section--tight">
+      <PageHead label="お問い合わせ" title="ご質問・ご相談はこちらから。" lead="ご注文や商品について、お仕事のご依頼など。3営業日以内にご返信します。" />
+      <div className="wrap">
         {sent ? (
           <div className="empty">
             <p>送信ありがとうございました（モックのため実際には送信されていません）。</p>
@@ -68,12 +68,12 @@ export function Contact() {
               <textarea id="contact-message" name="message" rows={6} maxLength={1000} onChange={(e) => setMessage(e.target.value)} aria-invalid={!!errors.message} />
             </Field>
             <Honeypot />
-            <button type="submit" className="button button--primary button--block">
+            <button type="submit" className="btn btn--block">
               送信する（モック）
             </button>
           </form>
         )}
-      </section>
+      </div>
     </>
   )
 }

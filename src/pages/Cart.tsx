@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { PageHero } from '../components/Decor'
-import { ProductArt } from '../components/ProductArt'
+import { PageHead } from '../components/Heads'
+import { ProductPlate } from '../components/ProductPlate'
 import { QtyStepper } from '../components/QtyStepper'
 import { FREE_SHIPPING_THRESHOLD, MAX_QTY_PER_ITEM, useCart } from '../lib/cart'
 import { formatYen } from '../lib/format'
@@ -11,72 +11,74 @@ export function OrderSummary() {
     <dl className="summary">
       <div>
         <dt>小計</dt>
-        <dd>{formatYen(subtotal)}</dd>
+        <dd className="num">{formatYen(subtotal)}</dd>
       </div>
       <div>
         <dt>送料</dt>
-        <dd>{shipping === 0 ? '無料' : formatYen(shipping)}</dd>
+        <dd className="num">{shipping === 0 ? '無料' : formatYen(shipping)}</dd>
       </div>
       <div className="summary__total">
         <dt>合計（税込）</dt>
-        <dd>{formatYen(total)}</dd>
+        <dd className="num">{formatYen(total)}</dd>
       </div>
     </dl>
   )
 }
 
 export function Cart() {
-  const { lines, setQty, remove, subtotal } = useCart()
+  const { lines, count, setQty, remove, subtotal } = useCart()
 
   return (
     <>
-      <PageHero en="Cart" ja="カート" />
-      <section className="section section--tight">
+      <PageHead label="カート" title="カートの中身" aside={<span className="num">{count} items</span>} />
+      <div className="wrap">
         {lines.length === 0 ? (
           <div className="empty">
-            <p>カートに商品が入っていません。</p>
-            <Link to="/shop" className="button button--primary">
-              商品を見る
+            <p>カートに商品はありません。</p>
+            <Link to="/shop" className="arrow-link">
+              商品をみる
             </Link>
           </div>
         ) : (
-          <div className="cart-layout">
-            <ul className="cart-list">
+          <div className="split">
+            <ul className="lines">
               {lines.map((line) => (
-                <li key={line.key} className="cart-item">
-                  <Link to={`/shop/${line.product.id}`} className="cart-item__thumb">
-                    <ProductArt product={line.product} />
+                <li key={line.key} className="line">
+                  <Link to={`/shop/${line.product.id}`} className="line__thumb">
+                    <ProductPlate product={line.product} bare />
                   </Link>
-                  <div className="cart-item__info">
-                    <Link to={`/shop/${line.product.id}`} className="cart-item__name">
+                  <div className="line__info">
+                    <Link to={`/shop/${line.product.id}`} className="line__name">
                       {line.product.name}
                     </Link>
-                    {line.variantLabel && <p className="cart-item__variant">{line.variantLabel}</p>}
-                    <p className="cart-item__unit">{formatYen(line.product.price)}</p>
+                    <p className="line__sub">
+                      {line.variantLabel && `${line.variantLabel}　`}
+                      <span className="num">{formatYen(line.product.price)}</span>
+                    </p>
                   </div>
                   <QtyStepper value={line.qty} max={Math.min(MAX_QTY_PER_ITEM, line.product.stock)} onChange={(q) => setQty(line.key, q)} />
-                  <p className="cart-item__total">{formatYen(line.lineTotal)}</p>
-                  <button type="button" className="icon-button" onClick={() => remove(line.key)} aria-label={`${line.product.name}を削除`}>
-                    ×
+                  <p className="line__total num">{formatYen(line.lineTotal)}</p>
+                  <button type="button" className="text-link line__remove" onClick={() => remove(line.key)} aria-label={`${line.product.name}を削除`}>
+                    削除
                   </button>
                 </li>
               ))}
             </ul>
-            <aside className="cart-aside">
+            <aside className="panel">
               <OrderSummary />
               {subtotal < FREE_SHIPPING_THRESHOLD && (
-                <p className="cart-aside__hint">あと{formatYen(FREE_SHIPPING_THRESHOLD - subtotal)}で送料無料</p>
+                <p className="panel__note">あと{formatYen(FREE_SHIPPING_THRESHOLD - subtotal)}で送料無料になります。</p>
               )}
-              <Link to="/checkout" className="button button--primary button--block">
+              <Link to="/checkout" className="btn btn--block">
                 ご購入手続きへ
               </Link>
-              <Link to="/shop" className="text-button text-button--center">
-                買い物を続ける
+              <Link to="/shop" className="text-link panel__link">
+                買いものを続ける
               </Link>
             </aside>
           </div>
         )}
-      </section>
+      </div>
     </>
   )
 }

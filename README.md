@@ -24,7 +24,18 @@ npm run preview   # http://127.0.0.1:4173 本番ビルドを本番同等のセ�
 | `/cart` `/checkout` `/complete` | カート・購入手続き（モック）・完了 |
 | `/contact` `/guide` `/legal` `/privacy` `/terms` | お問い合わせ・ご利用ガイド・特商法表記・規約類 |
 
-商品データは `src/data/products.ts`。商品画像は SVG イラスト（`src/components/ProductArt.tsx`）で、実写真に差し替える想定です。
+商品データは `src/data/products.ts`。
+
+## 写真の差し替え
+
+写真がない間は、商品を表す一字（茶・布・雲など）を色面に置いた仮ビジュアルを表示しています。
+`src/assets/photos/` に次の名前で画像を置くと、ビルド時に自動で写真に切り替わります（jpg / png / webp / avif）。
+
+| ファイル名 | 表示場所 |
+| --- | --- |
+| `hero.jpg` | トップのメインビジュアル（縦長推奨） |
+| `profile.jpg` | Machiのことページのポートレート（4:5） |
+| `product-{商品ID}.jpg` | 各商品（4:5）。例：`product-alishan-oolong.jpg` |
 
 ## セキュリティ方針（モック段階で実装済み）
 

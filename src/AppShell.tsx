@@ -1,10 +1,10 @@
+import type { ComponentType } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Layout } from './components/Layout'
+import { ScrollToTop } from './components/Shell'
 import { CartProvider } from './lib/cart'
 import { Cart } from './pages/Cart'
 import { Checkout } from './pages/Checkout'
 import { Contact } from './pages/Contact'
-import { Home } from './pages/Home'
 import { Guide, Legal, Privacy, Terms } from './pages/InfoPages'
 import { Journal } from './pages/Journal'
 import { NotFound } from './pages/NotFound'
@@ -13,10 +13,18 @@ import { ProductDetail } from './pages/ProductDetail'
 import { Shop } from './pages/Shop'
 import { Story } from './pages/Story'
 
-export default function App() {
+interface Props {
+  basename: string
+  Layout: ComponentType
+  Home: ComponentType
+}
+
+/** ルーティングとカートは両デザイン案で共通。見た目に関わる Layout と Home だけを差し替える。 */
+export function AppShell({ basename, Layout, Home }: Props) {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <CartProvider>
+        <ScrollToTop />
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />

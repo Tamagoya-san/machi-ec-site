@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import type { Product } from '../data/products'
+import { products, type Product } from '../data/products'
 import { photo } from '../lib/photos'
 
 interface Props {
@@ -8,6 +8,8 @@ interface Props {
   /** サムネイル等では読みを出さない */
   bare?: boolean
 }
+
+const SWATCHES = 5
 
 export function ProductPlate({ product, className = '', bare }: Props) {
   const src = photo(`product-${product.id}`)
@@ -18,6 +20,7 @@ export function ProductPlate({ product, className = '', bare }: Props) {
     <div
       className={`plate ${className}`}
       style={{ '--tone': product.plate.tone } as CSSProperties}
+      data-swatch={products.indexOf(product) % SWATCHES}
       role="img"
       aria-label={`${product.name}（イメージ）`}
     >

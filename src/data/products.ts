@@ -5,6 +5,8 @@ export interface Category {
   name: string
   nameZh: string
   lead: string
+  /** カテゴリーを表す一字 */
+  glyph: string
 }
 
 export interface Variant {
@@ -34,24 +36,28 @@ export const categories: Category[] = [
     name: '台湾の味',
     nameZh: '台灣味道',
     lead: 'わたしが育った島の、やさしい甘さとお茶の香り。',
+    glyph: '味',
   },
   {
     id: 'taiwan-craft',
     name: '台湾の雑貨',
     nameZh: '台灣雜貨',
     lead: '市場や路地裏で出会う、色あざやかな手しごと。',
+    glyph: '布',
   },
   {
     id: 'machi-original',
     name: 'Machi オリジナル',
     nameZh: 'Machi 原創',
     lead: '写真と言葉でつくった、Machiの小さな作品たち。',
+    glyph: '雲',
   },
   {
     id: 'bridge',
     name: '台日をつなぐ',
     nameZh: '台日之間',
     lead: '東京と台湾、ふたつの「ただいま」を結ぶもの。',
+    glyph: '橋',
   },
 ]
 
@@ -175,7 +181,7 @@ export const products: Product[] = [
     summary: 'シャボン玉や雲、台湾グルメをモチーフにした耐水ステッカー。',
     story: 'スマホやスーツケースに貼って、一緒に旅に出てくれたらうれしいです。',
     details: ['内容：6枚入', '加工：耐水・耐光', 'サイズ：最大 約60mm'],
-    plate: { glyph: '說', roman: 'shuō', tone: '#e6e5ea' },
+    plate: { glyph: '話', roman: 'huà', tone: '#e6e5ea' },
   },
   {
     id: 'acrylic-stand',

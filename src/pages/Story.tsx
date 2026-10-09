@@ -22,7 +22,7 @@ export function Story() {
       <PageHead label="Machiのこと" title="台湾で生まれて、東京で暮らす。" />
 
       <section className="profile wrap">
-        <Photo name="profile" alt="Machiのポートレート" caption="Photo — ご本人写真に差し替え" tone="#dfe6ea" className="profile__photo" />
+        <Photo name="profile" alt="Machiのポートレート" caption="Photo — ご本人写真に差し替え" className="profile__photo" />
         <div className="profile__body">
           <p className="label">Profile</p>
           <h2 className="profile__name">

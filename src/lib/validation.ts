@@ -58,6 +58,8 @@ export const contactSchema = z.object({
   message: text('お問い合わせ内容', 1000),
 })
 
+export const newsletterSchema = z.object({ email })
+
 export type FieldErrors = Partial<Record<string, string>>
 
 export function toFieldErrors(error: z.ZodError): FieldErrors {

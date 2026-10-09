@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 560" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <filter id="far" x="-30%" y="-60%" width="160%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" seed="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="90" xChannelSelector="R" yChannelSelector="G" result="shape" />
+      <feGaussianBlur in="shape" stdDeviation="8" />
+    </filter>
+    <filter id="back" x="-30%" y="-60%" width="160%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="5" seed="23" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="170" xChannelSelector="R" yChannelSelector="G" result="shape" />
+      <feGaussianBlur in="shape" stdDeviation="7" />
+    </filter>
+    <filter id="shade" x="-30%" y="-60%" width="160%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014" numOctaves="4" seed="8" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="140" xChannelSelector="R" yChannelSelector="G" result="shape" />
+      <feGaussianBlur in="shape" stdDeviation="24" />
+    </filter>
+    <filter id="front" x="-30%" y="-60%" width="160%" height="220%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="5" seed="11" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="130" xChannelSelector="R" yChannelSelector="G" result="shape" />
+      <feGaussianBlur in="shape" stdDeviation="5" />
+    </filter>
+  </defs>
+
+  <g filter="url(#far)" fill="#ffffff" opacity="0.6">
+    <ellipse cx="230" cy="130" rx="130" ry="30" />
+    <ellipse cx="340" cy="142" rx="90" ry="22" />
+    <ellipse cx="1250" cy="96" rx="150" ry="28" />
+    <ellipse cx="1370" cy="110" rx="80" ry="20" />
+  </g>
+
+  <g filter="url(#back)" fill="#ffffff" opacity="0.92">
+    <ellipse cx="140" cy="400" rx="210" ry="120" />
+    <ellipse cx="420" cy="380" rx="150" ry="110" />
+    <ellipse cx="1160" cy="390" rx="170" ry="115" />
+    <ellipse cx="1450" cy="360" rx="200" ry="130" />
+    <ellipse cx="760" cy="450" rx="220" ry="90" />
+  </g>
+
+  <g filter="url(#shade)" fill="#b4cbe2" opacity="0.6">
+    <ellipse cx="160" cy="470" rx="240" ry="60" />
+    <ellipse cx="460" cy="460" rx="200" ry="50" />
+    <ellipse cx="1150" cy="470" rx="220" ry="55" />
+    <ellipse cx="1470" cy="450" rx="230" ry="60" />
+    <ellipse cx="790" cy="500" rx="240" ry="40" />
+  </g>
+
+  <g filter="url(#front)" fill="#ffffff">
+    <ellipse cx="40" cy="520" rx="220" ry="90" />
+    <ellipse cx="320" cy="505" rx="200" ry="80" />
+    <ellipse cx="620" cy="540" rx="240" ry="70" />
+    <ellipse cx="960" cy="545" rx="260" ry="65" />
+    <ellipse cx="1260" cy="515" rx="210" ry="85" />
+    <ellipse cx="1560" cy="510" rx="220" ry="95" />
+    <rect x="-100" y="555" width="1800" height="100" />
+  </g>
+</svg>

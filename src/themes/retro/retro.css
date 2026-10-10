@@ -557,6 +557,7 @@ body::after {
   font-family: var(--f-head);
   font-size: 21px;
   line-height: 1.35;
+  word-break: keep-all;
 }
 .menu__name small {
   display: block;
@@ -889,6 +890,7 @@ body::after {
 }
 .letter input {
   flex: 1;
+  width: 0;
   min-width: 0;
   height: 48px;
   padding: 0 16px;
@@ -1114,6 +1116,7 @@ body::after {
 .timeline__year {
   font-family: var(--f-head);
   font-size: 18px;
+  line-height: 1.6;
   color: var(--red);
 }
 .timeline__row {
@@ -1245,26 +1248,50 @@ body::after {
     padding: 0 6px;
     font-size: 0;
   }
+  .night__panel {
+    padding-inline: 24px;
+  }
   .night__title {
-    font-size: 25px;
+    font-size: min(25px, calc((100vw - 2 * var(--pad) - 54px) / 11.8));
+  }
+  .night__actions {
+    display: grid;
+    grid-template-columns: max-content;
+  }
+  .night__actions .btn {
+    width: 100%;
+  }
+  .night__stage {
+    min-height: 380px;
   }
   .neon {
+    left: 0;
     font-size: 30px;
   }
   .sticker {
-    width: 118px;
+    width: 116px;
+  }
+  .sticker--a {
+    right: 0;
   }
   .sticker--b {
-    left: 36%;
-    top: 34%;
+    left: 34%;
+    top: 27%;
+  }
+  .sticker--c {
+    right: 0;
   }
   .stamp {
-    left: 30%;
+    left: 2%;
+    bottom: 0;
     width: 84px;
   }
   .menu__row {
-    grid-template-columns: 48px 1fr 20px;
+    grid-template-columns: 48px minmax(0, 1fr) 20px;
     gap: 2px 14px;
+  }
+  .menu__name {
+    font-size: 17px;
   }
   .menu__glyph {
     grid-row: 1 / 3;
@@ -1281,9 +1308,29 @@ body::after {
     grid-column: 3;
     grid-row: 1 / 3;
   }
+  .card__meta {
+    flex-direction: column;
+    gap: 0;
+  }
+  .follow__title {
+    font-size: min(30px, 8vw);
+  }
+  .ticket {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 16px 24px;
+  }
+  .timeline__year {
+    font-size: 16px;
+  }
+  .timeline__title {
+    font-size: 15px;
+  }
   .footer__cols {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 32px;
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+    gap: 32px 28px;
   }
   .footer__bottom {
     flex-direction: column;

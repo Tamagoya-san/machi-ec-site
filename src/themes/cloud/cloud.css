@@ -606,7 +606,7 @@
 /* ---------- Keep in touch ---------- */
 .keep {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--gap);
 }
 .keep__card {
@@ -667,6 +667,7 @@
 }
 .letter input {
   flex: 1;
+  width: 0;
   min-width: 0;
   height: 50px;
   padding: 0 20px;
@@ -997,7 +998,7 @@
     margin: 0 auto 40px;
   }
   .bubbles {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 36px;
   }
   .cloudband__inner {
@@ -1012,7 +1013,7 @@
     grid-template-columns: 1fr;
   }
   .keep {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .footer__inner {
     grid-template-columns: 1fr 1fr;
@@ -1033,9 +1034,31 @@
     padding: 0 6px;
   }
   .sky__title {
-    font-size: 26px;
+    font-size: min(26px, calc((100vw - 2 * var(--pad)) / 11.9));
     letter-spacing: 0.06em;
     text-wrap: balance;
+  }
+  .sky__actions {
+    display: grid;
+    grid-template-columns: max-content;
+    justify-content: center;
+  }
+  .sky__actions .btn {
+    width: 100%;
+  }
+  .search input {
+    width: 100%;
+  }
+  .letter input {
+    padding: 0 16px;
+  }
+  .letter__button {
+    padding: 0 18px;
+  }
+  .footer__inner {
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+    column-gap: 32px;
   }
   .footer__bottom {
     flex-direction: column;

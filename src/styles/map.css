@@ -1,0 +1,784 @@
+/* ───────── 地図（共通） ───────── */
+.map-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--sea);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.map-stage[data-interactive='true'] {
+  cursor: grab;
+  touch-action: none;
+}
+
+.map-stage[data-interactive='true']:active {
+  cursor: grabbing;
+}
+
+.map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-land {
+  transform-origin: 0 0;
+}
+
+.map-stage[data-animate='true'] .map-land,
+.map-stage[data-animate='true'] .map-pin,
+.map-stage[data-animate='true'] .map-label {
+  transition: transform 1s var(--ease);
+}
+
+.map-land path {
+  vector-effect: non-scaling-stroke;
+}
+
+.map-graticule path {
+  fill: none;
+  stroke: var(--sea-line);
+  stroke-width: 1;
+}
+
+.map-far {
+  fill: var(--land-far);
+  stroke: none;
+}
+
+.map-taiwan {
+  fill: var(--land);
+  stroke: var(--land-line);
+  stroke-width: 0.8;
+}
+
+.map-arc {
+  fill: none;
+  stroke: var(--pin);
+  stroke-width: 1.1;
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.map-japan path {
+  fill: var(--land);
+  stroke: var(--land-line);
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+  transition: fill 0.25s var(--ease);
+}
+
+.map-japan path[data-live='true'] {
+  fill: var(--pin-soft);
+}
+
+.map-stage[data-interactive='true'] .map-japan path {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .map-stage[data-interactive='true'] .map-japan path:hover {
+    fill: #f1ede4;
+  }
+
+  .map-stage[data-interactive='true'] .map-japan path[data-live='true']:hover {
+    fill: #f1cdc3;
+  }
+}
+
+.map-japan path[data-active='true'] {
+  fill: #efe9dc;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+}
+
+.map-japan path[data-live='true'][data-active='true'] {
+  fill: #f1cdc3;
+}
+
+/* ピンとラベル（陸地の上に重ねるHTML） */
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease);
+}
+
+.map-overlay[data-ready='false'] {
+  opacity: 0;
+}
+
+.map-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  white-space: nowrap;
+  color: #98a5a8;
+}
+
+.map-label--sea {
+  font-style: italic;
+  margin: -5px 0 0 -40px;
+}
+
+.map-label--country {
+  color: var(--ink-soft);
+  letter-spacing: 0.18em;
+  margin: 6px 0 0 14px;
+}
+
+.map-pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 押しやすいよう、見た目より広い当たり判定を持たせる */
+.map-pin::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+}
+
+.map-pin__dot {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--ink-mute);
+  border-radius: 50%;
+  background: var(--surface);
+  transition:
+    transform 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    background 0.3s var(--ease);
+}
+
+.map-pin[data-status='live'] .map-pin__dot {
+  top: -8px;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  border: 3px solid #fff;
+  background: var(--pin);
+  box-shadow: 0 2px 10px rgba(180, 53, 32, 0.4);
+}
+
+.map-pin[data-status='live'] .map-pin__dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--pin);
+  animation: pulse 2.6s var(--ease) infinite;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+.map-pin__label {
+  position: absolute;
+  top: -11px;
+  left: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  transition:
+    background 0.3s var(--ease),
+    color 0.3s var(--ease),
+    opacity 0.3s var(--ease);
+}
+
+.map-pin__label small {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+}
+
+.map-pin[data-status='live'] .map-pin__label {
+  top: -15px;
+  left: 16px;
+  padding: 6px 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 0 6px 18px rgba(23, 25, 28, 0.18);
+}
+
+.map-pin[data-status='live'] .map-pin__label small {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.map-pin:hover .map-pin__dot,
+.map-pin:focus-visible .map-pin__dot,
+.map-pin[data-selected='true'] .map-pin__dot {
+  transform: scale(1.25);
+  border-color: var(--ink);
+}
+
+.map-pin[data-status='live']:hover .map-pin__dot,
+.map-pin[data-status='live'][data-selected='true'] .map-pin__dot {
+  border-color: #fff;
+}
+
+.map-pin[data-status='sample']:hover .map-pin__label,
+.map-pin[data-status='sample'][data-selected='true'] .map-pin__label {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.map-pin:focus-visible {
+  outline: none;
+}
+
+.map-pin:focus-visible .map-pin__dot {
+  outline: 2px solid var(--pin);
+  outline-offset: 3px;
+}
+
+/* 狭い画面では、掲載イメージのピンの名前は選んだときだけ出す */
+@media (max-width: 640px) {
+  .map-stage[data-zoomed='false'] .map-pin[data-status='sample']:not([data-selected='true']) .map-pin__label {
+    opacity: 0;
+  }
+
+  .map-label--sea {
+    display: none;
+  }
+}
+
+.map-controls {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 20px rgba(23, 25, 28, 0.08);
+  overflow: hidden;
+}
+
+.map-controls button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-family: var(--font-latin);
+  font-size: 22px;
+  line-height: 1;
+  transition: background 0.2s var(--ease);
+}
+
+.map-controls button + button {
+  border-top: 1px solid var(--line-soft);
+}
+
+.map-controls button:hover {
+  background: var(--paper);
+}
+
+.map-controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.map-controls svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ───────── 地図ページ ───────── */
+.atlas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.atlas__map {
+  position: relative;
+  height: min(60svh, 560px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.atlas__credit {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: #8e9a9d;
+  pointer-events: none;
+}
+
+.atlas__panel {
+  padding: 28px var(--gutter) 8px;
+}
+
+.atlas__title {
+  margin-top: 14px;
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+}
+
+.atlas__lead {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 960px) {
+  .atlas {
+    grid-template-columns: minmax(380px, 440px) minmax(0, 1fr);
+    height: calc(100svh - var(--header));
+    min-height: 560px;
+  }
+
+  .atlas__map {
+    order: 2;
+    height: auto;
+    border-bottom: 0;
+    border-left: 1px solid var(--line-soft);
+  }
+
+  .atlas__panel {
+    order: 1;
+    overflow-y: auto;
+    padding: 40px 40px 40px var(--gutter);
+    overscroll-behavior: contain;
+  }
+
+  /* 地図ページは画面いっぱいに使うため、フッターとの余白を詰める */
+  .atlas + .footer,
+  main:has(.atlas) + .footer {
+    margin-top: 0;
+  }
+}
+
+/* 検索 */
+.search {
+  position: relative;
+  margin-top: 24px;
+}
+
+.search__field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  transition:
+    border-color 0.25s var(--ease),
+    box-shadow 0.25s var(--ease);
+}
+
+.search__field:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 4px rgba(23, 25, 28, 0.06);
+}
+
+.search__field svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: var(--ink-mute);
+}
+
+.search__field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: none;
+  /* iOSで入力時に拡大されないよう16px以上にする */
+  font-size: 16px;
+}
+
+.search__field input::placeholder {
+  color: #b3b6ba;
+}
+
+.search__clear {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: -8px;
+  border-radius: 50%;
+  color: var(--ink-mute);
+}
+
+.search__clear:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.search__results {
+  position: absolute;
+  inset: calc(100% + 8px) 0 auto;
+  z-index: 5;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 18px 48px rgba(23, 25, 28, 0.14);
+}
+
+.search__results button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.search__results button:hover,
+.search__results button[data-active='true'] {
+  background: var(--paper);
+}
+
+.search__results small {
+  display: block;
+  font-size: 11.5px;
+  color: var(--ink-mute);
+}
+
+.search__empty {
+  padding: 16px 14px;
+  font-size: 13px;
+  color: var(--ink-mute);
+}
+
+/* 一覧 */
+.atlas-list {
+  margin-top: 36px;
+}
+
+.atlas-list + .atlas-list {
+  margin-top: 32px;
+}
+
+.atlas-list h3 {
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+}
+
+.atlas-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 2px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  transition: padding 0.3s var(--ease);
+}
+
+.atlas-row:hover {
+  padding-left: 8px;
+}
+
+.atlas-row__dot {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--ink-mute);
+  border-radius: 50%;
+}
+
+.atlas-row[data-status='live'] .atlas-row__dot {
+  width: 11px;
+  height: 11px;
+  border: 0;
+  background: var(--pin);
+}
+
+.atlas-row__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+}
+
+.atlas-row__name small {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+}
+
+.atlas-row__arrow {
+  font-family: var(--font-latin);
+  font-size: 18px;
+  color: var(--ink-mute);
+}
+
+/* 詳細 */
+.atlas-detail {
+  margin-top: 26px;
+  animation: rise 0.6s var(--ease) both;
+}
+
+.atlas-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+}
+
+.atlas-back::before {
+  content: '←';
+  font-family: var(--font-latin);
+  font-size: 16px;
+}
+
+.atlas-back:hover {
+  color: var(--ink);
+}
+
+.atlas-detail__head {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.atlas-detail__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-family: var(--font-serif);
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+}
+
+.atlas-detail__summary {
+  font-size: 14px;
+  line-height: 1.95;
+  color: var(--ink-soft);
+}
+
+.atlas-block {
+  margin-top: 30px;
+}
+
+.atlas-block > h3 {
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+}
+
+.maker-chip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 20px 22px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  transition:
+    border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.maker-chip:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.maker-chip__name {
+  font-family: var(--font-latin);
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+}
+
+.maker-chip__tagline {
+  grid-column: 1;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.maker-chip__arrow {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  font-family: var(--font-latin);
+  font-size: 22px;
+}
+
+.mini-items {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 116px;
+  gap: 10px;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.mini-items::-webkit-scrollbar {
+  display: none;
+}
+
+.mini-item {
+  display: grid;
+  gap: 8px;
+  scroll-snap-align: start;
+}
+
+.mini-item__name {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.mini-item__price {
+  font-family: var(--font-latin);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+@media (min-width: 960px) {
+  .mini-items {
+    margin-inline: 0 -40px;
+    padding-inline: 0 40px;
+  }
+}
+
+.journey-chip {
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  transition: border-color 0.3s var(--ease);
+}
+
+.journey-chip:hover {
+  border-color: var(--ink);
+}
+
+.journey-chip__title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+}
+
+.journey-chip__meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+}
+
+.atlas-empty {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+.atlas-empty .arrow-link {
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.atlas-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+/* スマホでは検索窓を地図の上に重ねる */
+@media (max-width: 959px) {
+  .atlas {
+    position: relative;
+  }
+
+  .atlas .search[data-floating] {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 5;
+    margin-top: 0;
+  }
+
+  .atlas .search[data-floating] .search__field {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px -18px rgba(23, 25, 28, 0.5);
+  }
+}

@@ -1,2 +1,6 @@
-export const INSTAGRAM_URL = 'https://www.instagram.com/machihistory/'
-export const INSTAGRAM_ROOM_URL = 'https://www.instagram.com/machiroomhere/'
+// サイトのURL。Vercel 上ではデプロイ先のドメインを自動で使う。
+const vercelHost = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL
+
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? (vercelHost ? `https://${vercelHost}` : 'http://localhost:3000')
+
+export const machiInstagram = 'https://www.instagram.com/machihistory/'

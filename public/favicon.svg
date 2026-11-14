@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#1f2226"/><text x="32" y="45" text-anchor="middle" font-family="Hiragino Mincho ProN, Yu Mincho, serif" font-size="38" fill="#f7f6f2">間</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#f5f3ee"/>
+  <path d="M16 5.2c-4.6 0-8.2 3.6-8.2 8.1 0 5.9 8.2 14.2 8.2 14.2s8.2-8.3 8.2-14.2c0-4.5-3.600-8.1-8.200-8.1Z" fill="#d4432b"/>
+  <circle cx="16" cy="13.3" r="3" fill="#fff"/>
+</svg>

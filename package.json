@@ -1,34 +1,29 @@
 {
-  "name": "machi-ecsite",
+  "name": "machi-atlas",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "typecheck": "tsc --noEmit",
+    "build:map": "node scripts/build-map.mjs"
   },
   "dependencies": {
-    "@fontsource/dela-gothic-one": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@fontsource/instrument-serif": "^5.3.0",
-    "@fontsource/klee-one": "^5.3.0",
-    "@fontsource/mrs-saint-delafield": "^5.3.0",
-    "@fontsource/zen-kaku-gothic-new": "^5.3.0",
-    "@fontsource/zen-maru-gothic": "^5.3.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.4",
-    "zod": "^4.6.5"
+    "@google/genai": "^3.3.0",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
-    "oxlint": "^1.81.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0"
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "oxlint": "^1.93.0",
+    "typescript": "^7.0.2"
   }
 }

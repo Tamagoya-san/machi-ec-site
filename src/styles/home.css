@@ -1,0 +1,658 @@
+/* ───────── ヒーロー ───────── */
+.hero {
+  padding-block: clamp(36px, 6vw, 72px) clamp(24px, 4vw, 48px);
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(36px, 6vw, 64px);
+}
+
+.hero__copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 26px;
+}
+
+.hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 8.3vw, 44px);
+  font-weight: 500;
+  line-height: 1.42;
+  letter-spacing: 0.05em;
+}
+
+.hero__title span {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__lead {
+  max-width: 31em;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 28px;
+  margin-top: 6px;
+}
+
+.hero__route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.hero__route i {
+  width: 44px;
+  border-top: 1px dashed var(--pin);
+}
+
+.hero__map {
+  display: grid;
+  gap: 14px;
+}
+
+.map-plate {
+  position: relative;
+  aspect-ratio: 1000 / 1054;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--sea);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 30px 60px -30px rgba(40, 60, 66, 0.35);
+}
+
+.map-plate__tick {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: #8e9a9d;
+  pointer-events: none;
+}
+
+.map-plate__tick--tl {
+  top: 12px;
+  left: 14px;
+}
+
+.map-plate__tick--tr {
+  top: 12px;
+  right: 14px;
+}
+
+.map-plate__tick--bl {
+  bottom: 12px;
+  left: 14px;
+}
+
+.map-plate__tick--br {
+  bottom: 12px;
+  right: 14px;
+}
+
+.hero__map-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+
+.hero__map-note .arrow-link {
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+@media (min-width: 960px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    min-height: calc(100svh - var(--header) - 120px);
+  }
+
+  .hero__title {
+    font-size: clamp(36px, 3.7vw, 56px);
+  }
+
+  .hero__map {
+    justify-self: end;
+    width: min(100%, calc((100svh - var(--header) - 150px) * 0.949));
+    min-width: 420px;
+  }
+}
+
+/* ───────── 掲載中のつくり手 ───────── */
+.feature + .feature {
+  margin-top: clamp(64px, 9vw, 120px);
+}
+
+.feature__card {
+  display: grid;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--lp-paper);
+  color: var(--lp-ink);
+  border: 1px solid var(--line-soft);
+}
+
+.feature__art {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  background: var(--lp-soft);
+}
+
+.feature__art svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 1.2s var(--ease);
+}
+
+.feature__card:hover .feature__art svg {
+  transform: scale(1.04);
+}
+
+.feature__body {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 16px;
+  padding: clamp(28px, 5vw, 64px);
+}
+
+.feature__name {
+  font-family: var(--font-latin);
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.feature__tagline {
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+}
+
+.feature__summary {
+  max-width: 30em;
+  font-size: 14px;
+  line-height: 2;
+  opacity: 0.82;
+}
+
+.feature__body .btn {
+  margin-top: 10px;
+  border-color: var(--lp-ink);
+  color: var(--lp-ink);
+}
+
+.feature__card:hover .btn {
+  background: var(--lp-ink);
+  color: #fff;
+}
+
+.feature__items {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.feature__items > :nth-child(3) {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .feature__items > :nth-child(3) {
+    display: grid;
+  }
+}
+
+@media (min-width: 900px) {
+  .feature__card {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  }
+
+  .feature__art {
+    aspect-ratio: auto;
+    min-height: 520px;
+  }
+}
+
+/* ───────── しくみ ───────── */
+.how {
+  background: var(--surface);
+}
+
+.how__steps {
+  display: grid;
+  gap: 0;
+  counter-reset: step;
+}
+
+.how__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 4px 12px;
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+
+.how__step:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.how__no {
+  grid-row: 1 / span 2;
+  font-family: var(--font-latin);
+  font-size: 40px;
+  font-style: italic;
+  line-height: 1;
+  color: var(--pin);
+}
+
+.how__step h3 {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+}
+
+.how__step p {
+  grid-column: 2;
+  font-size: 13.5px;
+  line-height: 1.95;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 900px) {
+  .how__steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .how__step,
+  .how__step:last-child {
+    display: block;
+    padding: 36px 28px 8px 0;
+    border: 0;
+  }
+
+  .how__step + .how__step {
+    padding-left: 28px;
+    border-left: 1px solid var(--line);
+  }
+
+  /* 路線図のように、各ステップの頭に点を打つ */
+  .how__step::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pin);
+  }
+
+  .how__step + .how__step::before {
+    left: -4px;
+  }
+
+  .how__no {
+    display: block;
+    margin-bottom: 26px;
+    font-size: 56px;
+  }
+
+  .how__step h3 {
+    margin-bottom: 12px;
+    font-size: 23px;
+  }
+}
+
+/* ───────── AI試着の帯 ───────── */
+.tryband {
+  background: var(--paper-deep);
+}
+
+.tryband__grid {
+  display: grid;
+  gap: clamp(40px, 6vw, 72px);
+  align-items: center;
+}
+
+.tryband__copy {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+
+.tryband__copy .lead {
+  max-width: 28em;
+}
+
+.tryband__copy .btn {
+  margin-top: 10px;
+}
+
+.tryflow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1.25fr;
+  align-items: center;
+  gap: clamp(6px, 1.6vw, 18px);
+}
+
+.tryflow__tile {
+  display: grid;
+  gap: 10px;
+}
+
+.tryflow__tile svg {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 18px 36px -22px rgba(23, 25, 28, 0.4);
+}
+
+.tryflow__tile--result svg {
+  outline: 1px solid var(--pin);
+  outline-offset: 4px;
+}
+
+.tryflow__tile figcaption {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--ink-mute);
+}
+
+.tryflow__op {
+  margin-bottom: 26px;
+  font-family: var(--font-latin);
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1;
+  color: var(--ink-mute);
+}
+
+@media (min-width: 900px) {
+  .tryband__grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  }
+}
+
+/* ───────── 土地の索引 ───────── */
+.index__lead {
+  max-width: 36em;
+}
+
+.index {
+  border-top: 1px solid var(--ink);
+}
+
+.index__row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  grid-template-areas:
+    'no name tag'
+    'no craft arrow';
+  align-items: center;
+  gap: 2px 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  transition:
+    background 0.3s var(--ease),
+    padding 0.3s var(--ease);
+}
+
+.index__row:hover {
+  padding-inline: 10px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.index__no {
+  grid-area: no;
+  align-self: start;
+  padding-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+}
+
+.index__name {
+  grid-area: name;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+}
+
+.index__en {
+  display: none;
+  font-family: var(--font-latin);
+  font-size: 19px;
+  font-style: italic;
+  color: var(--ink-mute);
+}
+
+.index__craft {
+  grid-area: craft;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.index__row .tag {
+  grid-area: tag;
+  justify-self: end;
+}
+
+.index__arrow {
+  grid-area: arrow;
+  justify-self: end;
+  font-family: var(--font-latin);
+  font-size: 18px;
+  color: var(--ink-mute);
+}
+
+@media (min-width: 760px) {
+  .index__row {
+    grid-template-columns: 56px minmax(120px, 1fr) minmax(140px, 1fr) minmax(160px, 1.4fr) auto 28px;
+    grid-template-areas: none;
+    gap: 20px;
+    padding: 24px 0;
+  }
+
+  .index__row > *,
+  .index__row .tag {
+    grid-area: auto;
+  }
+
+  .index__no {
+    align-self: center;
+    padding-top: 0;
+  }
+
+  .index__name {
+    font-size: 27px;
+  }
+
+  .index__en {
+    display: block;
+  }
+
+  .index__craft {
+    font-size: 13.5px;
+  }
+}
+
+/* ───────── しめくくり ───────── */
+.closing {
+  padding-bottom: 0;
+}
+
+.closing__machi {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+
+.closing__photo {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  width: min(100%, 420px);
+}
+
+.closing__photo img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.closing__photo figcaption {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+}
+
+.closing__copy {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 20px;
+}
+
+.closing__facts {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 8px 36px;
+  margin-top: 4px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.closing__facts dt {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.closing__facts dd {
+  margin-top: 4px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+}
+
+.closing__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin-top: 8px;
+}
+
+.closing__join {
+  display: grid;
+  gap: 24px;
+  margin-top: clamp(56px, 8vw, 104px);
+  padding: clamp(32px, 5vw, 64px);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #e9e6df;
+}
+
+.closing__join .eyebrow {
+  color: #a5a199;
+}
+
+.closing__join h2 {
+  margin-top: 14px;
+  font-family: var(--font-serif);
+  font-size: clamp(23px, 2.6vw, 34px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+
+.closing__join-body {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 22px;
+}
+
+.closing__join-body p {
+  font-size: 14px;
+  line-height: 2;
+  color: #cfcbc3;
+}
+
+.closing__join .btn {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+}
+
+.closing__join .btn:hover {
+  background: var(--pin);
+  border-color: var(--pin);
+  color: #fff;
+}
+
+@media (min-width: 900px) {
+  .closing__machi {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(56px, 7vw, 112px);
+  }
+
+  .closing__photo {
+    justify-self: end;
+  }
+
+  .closing__join {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 72px;
+    align-items: center;
+  }
+}
+
+/* 写真 */
+.feature__art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  transition: transform 1.1s var(--ease);
+}
+
+.feature__card:hover .feature__art img {
+  transform: scale(1.03);
+}

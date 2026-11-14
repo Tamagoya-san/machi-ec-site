@@ -1,169 +1,153 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from 'react'
+'use client'
+
+import { createContext, use, useCallback, useMemo, useSyncExternalStore, type ReactNode } from 'react'
 import { z } from 'zod'
-import { findProduct, type Product } from '../data/products'
+import { getProduct } from '@/content'
+import type { Product } from '@/content/types'
 
-const STORAGE_KEY = 'machi-shop:cart:v1'
-export const MAX_QTY_PER_ITEM = 10
-export const FREE_SHIPPING_THRESHOLD = 5000
-export const SHIPPING_FEE = 600
+// カートは「商品ID・タイプ・数量」だけを localStorage に持つ。
+// 価格は必ずカタログ（src/content）から引き直すので、保存データを書き換えても金額は変わらない。
 
-// localStorage はユーザーが自由に書き換えられるため、ID と数量だけを保存し、
-// 価格や商品名は必ずカタログ側から引き直す（価格改ざん対策）。
-const storedLineSchema = z.object({
-  productId: z.string().max(64).regex(/^[a-z0-9-]+$/),
-  variantId: z.string().max(32).regex(/^[a-z0-9-]+$/).nullable(),
-  qty: z.number().int().min(1).max(MAX_QTY_PER_ITEM),
+const KEY = 'machi-atlas:cart:v1'
+const MAX_QTY = 10
+
+const lineSchema = z.object({
+  id: z.string().min(1).max(80),
+  variant: z.string().max(40).nullable(),
+  qty: z.number().int().min(1).max(MAX_QTY),
 })
-const storedCartSchema = z.array(z.unknown()).max(50)
+const cartSchema = z.array(lineSchema).max(50)
 
-type StoredLine = z.infer<typeof storedLineSchema>
+export type CartLine = z.infer<typeof lineSchema>
+export type ResolvedLine = CartLine & { product: Product; lineTotal: number }
 
-export interface CartLine extends StoredLine {
-  key: string
-  product: Product
-  variantLabel: string | null
-  lineTotal: number
-}
+/** 国内送料（TEEENU公式ショップの現行条件をもとにした仮の設定） */
+export const SHIPPING = { fee: 550, freeFrom: 10000 }
 
-type Action =
-  | { type: 'add'; productId: string; variantId: string | null; qty: number }
-  | { type: 'setQty'; key: string; qty: number }
-  | { type: 'remove'; key: string }
-  | { type: 'clear' }
+const EMPTY: CartLine[] = []
+let cache: { raw: string | null; lines: CartLine[] } = { raw: null, lines: EMPTY }
+const listeners = new Set<() => void>()
 
-const lineKey = (productId: string, variantId: string | null) => `${productId}::${variantId ?? '-'}`
-
-const maxQtyFor = (productId: string) => {
-  const product = findProduct(productId)
-  return product ? Math.min(MAX_QTY_PER_ITEM, product.stock) : 0
-}
-
-const isValidLine = (line: StoredLine) => {
-  const product = findProduct(line.productId)
-  if (!product) return false
-  if (product.variants) return product.variants.some((v) => v.id === line.variantId)
-  return line.variantId === null
-}
-
-const clamp = (qty: number, productId: string) =>
-  Math.max(1, Math.min(Math.floor(qty), maxQtyFor(productId)))
-
-function reducer(state: StoredLine[], action: Action): StoredLine[] {
-  switch (action.type) {
-    case 'add': {
-      const candidate = { productId: action.productId, variantId: action.variantId, qty: action.qty }
-      if (!isValidLine(candidate) || !Number.isFinite(action.qty)) return state
-      const key = lineKey(action.productId, action.variantId)
-      const existing = state.find((l) => lineKey(l.productId, l.variantId) === key)
-      if (existing) {
-        return state.map((l) =>
-          l === existing ? { ...l, qty: clamp(l.qty + action.qty, l.productId) } : l,
-        )
-      }
-      return [...state, { ...candidate, qty: clamp(action.qty, action.productId) }]
-    }
-    case 'setQty':
-      if (!Number.isFinite(action.qty)) return state
-      return state.map((l) =>
-        lineKey(l.productId, l.variantId) === action.key ? { ...l, qty: clamp(action.qty, l.productId) } : l,
-      )
-    case 'remove':
-      return state.filter((l) => lineKey(l.productId, l.variantId) !== action.key)
-    case 'clear':
-      return []
-  }
-}
-
-function loadCart(): StoredLine[] {
+function read(): CartLine[] {
+  let raw: string | null = null
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw || raw.length > 10_000) return []
-    const parsed = storedCartSchema.safeParse(JSON.parse(raw))
-    if (!parsed.success) return []
-    return parsed.data.flatMap((item) => {
-      const line = storedLineSchema.safeParse(item)
-      return line.success && isValidLine(line.data) ? [{ ...line.data, qty: clamp(line.data.qty, line.data.productId) }] : []
-    })
+    raw = window.localStorage.getItem(KEY)
   } catch {
-    return []
+    return EMPTY
+  }
+  if (raw === cache.raw) return cache.lines
+  let lines: CartLine[] = EMPTY
+  if (raw) {
+    try {
+      const parsed = cartSchema.safeParse(JSON.parse(raw))
+      // カタログに無い商品・存在しないタイプの行は捨てる
+      if (parsed.success) lines = parsed.data.filter(isValidLine)
+    } catch {
+      lines = EMPTY
+    }
+  }
+  cache = { raw, lines }
+  return lines
+}
+
+function isValidLine(line: CartLine): boolean {
+  const product = getProduct(line.id)
+  if (!product) return false
+  if (!product.variants) return line.variant === null
+  return product.variants.some((v) => v.id === line.variant)
+}
+
+function write(lines: CartLine[]) {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(lines))
+  } catch {
+    // 保存できない環境（プライベートブラウズ等）でも、表示中の状態は保つ
+    cache = { raw: cache.raw, lines }
+  }
+  listeners.forEach((listener) => listener())
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  window.addEventListener('storage', listener)
+  return () => {
+    listeners.delete(listener)
+    window.removeEventListener('storage', listener)
   }
 }
 
-interface CartContextValue {
-  lines: CartLine[]
+type CartValue = {
+  /** localStorage を読み終えるまでは false（サーバー描画との食い違いを避ける） */
+  ready: boolean
+  lines: ResolvedLine[]
   count: number
   subtotal: number
   shipping: number
   total: number
-  isOpen: boolean
-  add: (productId: string, variantId: string | null, qty?: number) => void
-  setQty: (key: string, qty: number) => void
-  remove: (key: string) => void
+  add: (id: string, variant: string | null, qty: number) => void
+  setQty: (id: string, variant: string | null, qty: number) => void
+  remove: (id: string, variant: string | null) => void
   clear: () => void
-  open: () => void
-  close: () => void
 }
 
-const CartContext = createContext<CartContextValue | null>(null)
+const CartContext = createContext<CartValue | null>(null)
+
+const same = (line: CartLine, id: string, variant: string | null) => line.id === id && line.variant === variant
+const clamp = (qty: number) => Math.max(1, Math.min(MAX_QTY, Math.round(qty)))
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [stored, dispatch] = useReducer(reducer, undefined, loadCart)
-  const [isOpen, setOpen] = useState(false)
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stored))
-    } catch {
-      /* ストレージが使えない環境ではメモリ上のみで保持 */
-    }
-  }, [stored])
-
-  const lines = useMemo<CartLine[]>(
-    () =>
-      stored.flatMap((l) => {
-        const product = findProduct(l.productId)
-        if (!product) return []
-        const variantLabel = product.variants?.find((v) => v.id === l.variantId)?.label ?? null
-        return [{ ...l, key: lineKey(l.productId, l.variantId), product, variantLabel, lineTotal: product.price * l.qty }]
-      }),
-    [stored],
+  const stored = useSyncExternalStore(subscribe, read, () => EMPTY)
+  const ready = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
   )
 
-  const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0)
-  const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
-  const count = lines.reduce((sum, l) => sum + l.qty, 0)
-
-  const add = useCallback((productId: string, variantId: string | null, qty = 1) => {
-    dispatch({ type: 'add', productId, variantId, qty })
-    setOpen(true)
+  const add = useCallback((id: string, variant: string | null, qty: number) => {
+    const lines = read()
+    const existing = lines.find((line) => same(line, id, variant))
+    const next = existing
+      ? lines.map((line) => (same(line, id, variant) ? { ...line, qty: clamp(line.qty + qty) } : line))
+      : [...lines, { id, variant, qty: clamp(qty) }]
+    write(next.filter(isValidLine))
   }, [])
-  const setQty = useCallback((key: string, qty: number) => dispatch({ type: 'setQty', key, qty }), [])
-  const remove = useCallback((key: string) => dispatch({ type: 'remove', key }), [])
-  const clear = useCallback(() => dispatch({ type: 'clear' }), [])
-  const open = useCallback(() => setOpen(true), [])
-  const close = useCallback(() => setOpen(false), [])
 
-  const value: CartContextValue = {
-    lines,
-    count,
-    subtotal,
-    shipping,
-    total: subtotal + shipping,
-    isOpen,
-    add,
-    setQty,
-    remove,
-    clear,
-    open,
-    close,
-  }
+  const setQty = useCallback((id: string, variant: string | null, qty: number) => {
+    write(read().map((line) => (same(line, id, variant) ? { ...line, qty: clamp(qty) } : line)))
+  }, [])
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
+  const remove = useCallback((id: string, variant: string | null) => {
+    write(read().filter((line) => !same(line, id, variant)))
+  }, [])
+
+  const clear = useCallback(() => write([]), [])
+
+  const value = useMemo<CartValue>(() => {
+    const lines = stored.flatMap((line) => {
+      const product = getProduct(line.id)
+      return product ? [{ ...line, product, lineTotal: product.price * line.qty }] : []
+    })
+    const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0)
+    const shipping = lines.length === 0 || subtotal >= SHIPPING.freeFrom ? 0 : SHIPPING.fee
+    return {
+      ready,
+      lines,
+      count: lines.reduce((sum, line) => sum + line.qty, 0),
+      subtotal,
+      shipping,
+      total: subtotal + shipping,
+      add,
+      setQty,
+      remove,
+      clear,
+    }
+  }, [stored, ready, add, setQty, remove, clear])
+
+  return <CartContext value={value}>{children}</CartContext>
 }
 
-// oxlint-disable-next-line react/only-export-components
-export function useCart() {
-  const ctx = useContext(CartContext)
-  if (!ctx) throw new Error('useCart must be used within CartProvider')
-  return ctx
+export function useCart(): CartValue {
+  const value = use(CartContext)
+  if (!value) throw new Error('useCart は CartProvider の内側で使ってください')
+  return value
 }

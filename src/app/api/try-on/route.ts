@@ -183,7 +183,8 @@ export async function POST(request: Request) {
   input.unshift({ type: 'text', text: buildPrompt(product.tryOn.prompt, hasReference) })
 
   try {
-    const ai = new GoogleGenAI({ apiKey })
+    // 画像の入力は v1beta でだけ受け付ける。既定の v1 だと生成前に 400 になる。
+    const ai = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' })
     const interaction = await ai.interactions.create({
       model: MODEL,
       input,
@@ -195,6 +196,7 @@ export async function POST(request: Request) {
       },
       // Google 側にやりとりを保存しない
       store: false,
+      api_version: 'v1beta',
     })
 
     const output = interaction.output_image
